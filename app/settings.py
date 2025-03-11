@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from app.auth.auth import RoleBasedTokenAuth
 
 load_dotenv()
 
@@ -10,6 +11,14 @@ DEBUG = os.getenv("DEBUG") == "True"
 RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
 ITEM_METHODS = ['GET', 'PATCH', 'DELETE']
 
-from app.models.user import users
+from app.schemas.user import users
 
-DOMAIN = {'users': users}
+DOMAIN = {
+    'users': {
+        **users,
+        "resource_methods": ["GET", "POST"],
+        "item_methods": ["GET", "PATCH", "DELETE"],
+        "authentication": RoleBasedTokenAuth,
+        "allowed_roles": ["admin"],
+    }
+}
